@@ -1,20 +1,22 @@
 'use strict';
+let __ = require('../util');
 /*
 0010-sum-primes
+
+Project Euler
+
+Problem 10
+
+https://projecteuler.net/problem=10
 
 The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
 
 Find the sum of all the primes below two million.
-*/
 
-//=================
-// boilerplate debugging helper function
-//
-let isDebug = false;
-function debug_log(...myArgs){
-    if(isDebug)
-        console.log(...myArgs);
-}
+Answer:  142913828922
+Completed on Sun, 11 Sep 2022, 18:15
+
+*/
 
 //====================
 //
@@ -23,7 +25,7 @@ function debug_log(...myArgs){
 let p=[2,3,5];
 function getprimes(limit){
     
-    for(let i=p[p.length-1]+2; i<limit; i+=2){
+    for(let i=p[p.length-1]+2; i<=limit; i+=2){
         let stop=Math.ceil( Math.sqrt( i ) ) + 1;
         let isItPrime=true;
         for( let j=0; j<p.length && p[j]<stop; ++j){
@@ -36,48 +38,38 @@ function getprimes(limit){
             p.push(i);
         }
     }
-    if( isDebug ){
-        debug_log('primes:');
-        debug_log(p)
-    }
+    __.dlog('primes:');
+    __.dlog(p)
 }
 
 function sumprimes(){
     return p.reduce((a,e,i,arr)=>{
         a += e;
-        // debug_log(' e: ', e);
         return a;
     },0);
 }
 
-// let target=100;
-let target=2000000;
-const myArgs = process.argv.slice(2);
-let debugstrarr=['-d','--debug'];
-for( ; myArgs.length >= 1; myArgs.shift()){
-    let test=parseInt(myArgs[0]);
-    if( debugstrarr.includes(myArgs[0].toLowerCase()) ){
-        isDebug = true;
-        debug_log('calling args: ',myArgs)
-        debug_log('debug set to TRUE')
-    }
-    else if( !isNaN(test) && test !== 0 ){
-        target=test;
-    }
-    else{
-        // let shelp = myArgs[0].toLowerCase();
-        // if( shelp === '-h' || '--help')
-        console.log('usage: node sumrpimes.js [some-number] [-d] [--debug]');
-        console.log('       some-number: sum the primes less than some-number');
-        console.log('                    ( default value is 2000000, two million )');
-        console.log('       -d or --debug: extra debugging outup');
-        return(0);
-    }
-    
+let msg = [
+    'If no value give, default value is 2000000, two million.'
+]
+
+if( ! __.parseCommandLineArgs('sumprimes',msg) ) 
+  return(0);
+let nums = __.getNumbersFromCommandLine()
+if( nums.length == 0){
+    nums.push(2000000);
 }
-console.log('target: ',target);
-getprimes(target);
+__.clog();
+while(nums.length>0){
+    let target = nums.shift();
 
-let ret=sumprimes();
+    //
+    // get the primes
+    // then get the sums
+    //
+    getprimes(target);
+    let ret=sumprimes();
 
-console.log('sum primes: ', ret);
+    __.clog('target: ',target,'sum primes: ', ret);  
+    __.slog(target,ret);  
+}
