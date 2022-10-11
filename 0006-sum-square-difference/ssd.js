@@ -25,47 +25,6 @@ Find the difference between the sum of the squares of the first one hundred natu
 */
 
 /*
-debugging boilerplate
-*/
-const dline = '========================';
-const sline = '------------------------';
-
-let isSilent = false;
-let isVerboseLog = false;
-let isDebugLog = false;
-
-function progdot(){
-    if(!isSilent)
-        process.stdout.write('.');
-}
-function clog(...args){
-    if(!isSilent)
-        console.log(...args);
-}
-function dlog(...args){
-    if(isDebugLog && !isSilent)
-        console.log(...args);
-}
-function vlog(...args){
-    if(isVerboseLog && !isSilent)
-        console.log(...args);
-}
-
-function clogdline(){
-    clog(dline);
-}
-function clogsline(){
-    clog(sline);
-}
-
-function dlogdline(){
-    dlog(dline);
-}
-function dlogsline(){
-    dlog(sline);
-}
-
-/*
 function to solve the problem
 */
 
@@ -84,7 +43,7 @@ first one hundred natural numbers and the square of the sum.
 //
 function sum_a( n ){
   let ret = ( n * (1 + n) / 2 );
-  dlog(`sum_a(n:${n}) = ${ret}`)
+  __.dlog(`sum_a(n:${n}) = ${ret}`)
   return ret;
 }
 
@@ -97,7 +56,7 @@ function sum_a( n ){
 //
 function sum_g( n ){
   let ret = ( ( n * (n + 1) * (2*n + 1) ) / 6 );
-  dlog(`sum_g(n:${n}) = ${ret}`)
+  __.dlog(`sum_g(n:${n}) = ${ret}`)
   return ret;
 }
 
@@ -107,87 +66,31 @@ function gitDiff(n){
   return ret;
 }
 
-
-
 /*
 driver
 */
 let nums = [];
 
-function parseCommandLineArgs(){
-    
-    let isError = false;
-    let unknownArgs = [];
-    const myArgs = process.argv.slice(2);
-    let debugstrarr=['-d','--debug'];
-    let verbosearr=['-v','--verbose'];
-    let silentarr=['-s','--silent'];
-    let smyArgs = myArgs.slice();
-    for( ; myArgs.length >= 1; myArgs.shift()){
-        let test=parseInt(myArgs[0]);
-        if( debugstrarr.includes(myArgs[0].toLowerCase()) ){
-            isDebugLog = true;
-            // isVerboseLog = true;
-            // isSilent = true; // what the hell, turn it on here
-            // dlog('calling args: ',myArgs)
-            // dlog('debug set to TRUE')
-        }
-        else if( verbosearr.includes(myArgs[0].toLowerCase()) ){
-            // isDebugLog = true;  // what the hell, turn it on here
-            isVerboseLog = true;
-            // isSilent = true;
-            // clog('calling args: ',myArgs)
-            // clog('verbose set to TRUE')
-            // clog('  debug set to TRUE')
-        }
-        else if( silentarr.includes(myArgs[0].toLowerCase()) ){
-            // isDebugLog = false;  // what the hell, turn it on here
-            // isVerboseLog = false;
-            isSilent = true;
-        }
-        else if(test>0){
-            nums.push(test);
-        }
-        else{
-          isError = true;
-          unknownArgs.push(myArgs[0]);
-        }
-        if(isError){
-            console.log();
-            console.log('unknown args:',unknownArgs )
-            // let shelp = myArgs[0].toLowerCase();
-            // if( shelp === '-h' || '--help')
-            console.log();
-            console.log('usage: node ssd.js [number ...][-d] [--debug] [-v] [--verbose]');
-            console.log('       -d or --debug. : extra debugging output');
-            console.log('       -v or --verbose: extra chatty output');
-            console.log();
-            console.log('Prints out the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum..');
-            console.log();
-            return(false);
-        }
-    }
-    dlog()
-    dlog('calling args: ',smyArgs)
-    dlog()
-    if(isVerboseLog) clog('verbose set to TRUE')
-    if(isDebugLog)   clog('  debug set to TRUE')
-    return true;
-}
+let msg = [
+  'Find the difference between the sum of the squares of the first "N" natural numbers and the square of the sum.',
+  'If no value is give, the value of 100 will be used.'
+]
 
-if( ! parseCommandLineArgs() ) return(0);
+if( ! __.parseCommandLineArgs('ssd',msg) ) 
+  return(0);
 
-if( nums.length == 0) nums.push(10);
-clog();
+nums = __.getNumbersFromCommandLine()
+if( nums.length == 0){
+  nums.push(100);
+} 
+
 while(nums.length>0){
   let tar = nums.shift()
-  dlog();
+
   let val = gitDiff( tar );
 
-  if(isSilent){
-    console.log(val); 
-  }else{
-    clog();
-    clog(`target: ${tar}  value: ${val}`);
-  }
+  __.clog();
+  __.clog(`target: ${tar}  value: ${val}`);
+
+  __.slog(tar,val);
 }
