@@ -65,6 +65,7 @@ function mult3or5(below){
     }
     return sum;
 }
+
 let target = 1000;
 let ret = mult3or5(target);
 console.log(ret);
