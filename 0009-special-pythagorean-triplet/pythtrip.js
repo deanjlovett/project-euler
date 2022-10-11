@@ -1,43 +1,18 @@
 'use strict';
-
+let __ = require('../util');
 /*
+Project Euler
+
+Special Pythagorean Triplet
+
+Problem 9
+
+https://projecteuler.net/problem=9
+
+Find Pythagorean triplet where a &lt; b &lt; c, a^2 + b^2 = c^2 and a+b+c == 1000
 
 */
 
-/*
-debugging boilerplate
-*/
-const dline = '========================';
-const sline = '------------------------';
-
-let isConLog = false;
-let isDebugLog = false;
-
-function progdot(){
-    if(isConLog)
-        process.stdout.write('.');
-}
-function clog(...args){
-    if(isConLog)
-        console.log(...args);
-}
-function dlog(...args){
-    if(isDebugLog && isConLog)
-        console.log(...args);
-}
-
-function clogdline(){
-    clog(dline);
-}
-function clogsline(){
-    clog(sline);
-}
-function dlogdline(){
-    dlog(dline);
-}
-function dlogsline(){
-    dlog(sline);
-}
 
 /*
 function to solve the problem
@@ -74,7 +49,7 @@ function pythtrip(){
     let innerloopcount = 0;
     for( ;c > 413; --c){
         b=c-1;
-        clog(`c:${c}  b:${b}`);
+        __.clog(`c:${c}  b:${b}`);
 
         // todo: speed up
         // try leaving early: 
@@ -83,116 +58,81 @@ function pythtrip(){
         // 
         // todo: speed up
         // try to calc next 'b' guess base on the first and last 'sqrt - a' 
+
         first_b = c-1;
         last_b = 292;
-
-        // if ( calcdiff(last_b,c) > 0) {
-        //     clog(`no values of 'b' will work with this 'c'. Skipping this many b values:`, first_b-292);
-        //     clog();
-        //     continue;
-        // }
+        
         for(;b > 292; --b){
-            // process.stdout.write('.');
+
             ++innerloopcount;
-            progdot();
+            __.progdot();
+
             let csmbs = c*c - b*b;
             let  sqrt = Math.sqrt(csmbs);
             let tsqrt = Math.trunc( sqrt );
             a = tsum - b - c;
-            if( b === c-1 || b===292+1 || Math.abs(tsqrt - a)==1){
-                if( b === c-1 ){clog();clog('start');}
-                if(  b===292+1){clog();clog('stop');}
-                clog();
-                clog(`    tsqrt:`, tsqrt);
-                clog(`        a:`, a);
-                clog(`tsqrt - a:`, tsqrt - a);
-                clog();
-            }
+            // if( b === c-1 || b===292+1 || Math.abs(tsqrt - a)==1){
+
+            //     if( b === c-1 ){__.clog();__.clog('start');}
+            //     if(  b===292+1){__.clog();__.clog('stop');}
+            //     __.clog();
+            //     __.clog(`    tsqrt:`, tsqrt);
+            //     __.clog(`        a:`, a);
+            //     __.clog(`tsqrt - a:`, tsqrt - a);
+            //     __.clog();
+            // }
             if( tsqrt - a === 0 ){
                 ret = {a:a, b:b, c:c};
-                clog();
-                clog(`possible triple:`, ret);
-                clog(`a*a + b*b = `, a*a + b*b );
-                clog(`      c*c = `, c*c );
+
+                __.clog();
+                __.clog(`possible triple:`, ret);
+                __.clog(`a*a + b*b = `, a*a + b*b );
+                __.clog(`      c*c = `, c*c );
+
                 if( a*a + b*b === c*c ){
-                    clog(`found it. a:`, a)
+                    __.clog(`found it. a:`, a)
+
                     foundIt = true;
                     break;
                 }else{
-                    // clog(`false alarm!`);
-                    clog(`false alarm! giving up on combo: c:${c}, b:${b}`);
-                    clog(`skipping this many b values:`, b-292);
-                    clog();
+                    __.clog(`false alarm! giving up on combo: c:${c}, b:${b}`);
+                    __.clog(`skipping this many b values:`, b-292);
+                    __.clog();
                     break;
                 }
             }
         }
-        clog();
+        __.clog();
         if(foundIt) break;
     }
 
     let ret4 = {a:a*4, b:b*4, c:c*4};
-    clog();
-    clog('tried this many triplet:', innerloopcount);
-    clog();
-    clog(`pyth triple * 4:`, ret4); 
+
+    __.clog();
+    __.clog('tried this many triplet:', innerloopcount);
+    __.clog();
+    __.clog(`pyth triple * 4:`, ret4); 
+
     ret = {a:a, b:b, c:c};
-    console.log();
-    console.log(`    pyth triple:`, ret); 
+
+    __.clog();
+    __.clog(`    pyth triple:`, ret); 
+    __.slog(`    pyth triple:`, ret); 
+
     let prod = a*b*c;
-    console.log(`    pyth triple prod:`, prod); 
-    console.log();
+
+    __.slog(`    pyth triple prod:`, prod); 
+    __.clog(`    pyth triple prod:`, prod); 
+    __.clog();
     return prod;
 }
+
 /*
 driver
 */
 
-function parseCommandLineArgs(){
-    let isError = false;
-    let unknownArgs = [];
-    const myArgs = process.argv.slice(2);
-    let debugstrarr=['-d','--debug'];
-    let verbosearr=['-v','--verbose'];
-    for( ; myArgs.length >= 1; myArgs.shift()){
-        // let test=parseInt(myArgs[0]);
-        if( debugstrarr.includes(myArgs[0].toLowerCase()) ){
-            isDebugLog = true;
-            isConLog = true; // what the hell, turn it on here
-            dlog('calling args: ',myArgs)
-            dlog('debug set to TRUE')
-        }
-        else if( verbosearr.includes(myArgs[0].toLowerCase()) ){
-            isDebugLog = true;  // what the hell, turn it on here
-            isConLog = true;
-            clog('calling args: ',myArgs)
-            clog('debug set to TRUE')
-        }
-        else{
-          isError = true;
-          unknownArgs.push(myArgs[0]);
-        }
-        if(isError){
-            console.log();
-            console.log('unknown args:',unknownArgs )
-            // let shelp = myArgs[0].toLowerCase();
-            // if( shelp === '-h' || '--help')
-            console.log();
-            console.log('usage: node pythtrip.js [-d] [--debug] [-v] [--verbose]');
-            console.log('       -d or --debug. : extra debugging output');
-            console.log('       -v or --verbose: extra chatty output');
-            console.log();
-            return(false);
-        }
-    }
-    return true;
-}
+if( ! __.parseCommandLineArgs('pythtrip') ) 
+  return(0);
 
-if( ! parseCommandLineArgs() ) return(0);
 pythtrip();
 
-// function main(){
-//     parseCommandLineArgs
-//     pythtrip();
-// }
-// main();
