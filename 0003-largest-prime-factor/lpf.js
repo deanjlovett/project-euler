@@ -47,7 +47,7 @@ while(targetarr.length>0){
     let target = targetarr.shift();
     const larget_int = 9007199254740991;
     console.log();
-    console.log(`By the way, the larget in Javascript is near :`, larget_int);
+    console.log(`By the way, the largest integer in Javascript is near :`, larget_int);
     console.log();
     console.log(`What is the largest prime factor of the number ${target} ?`);
     console.log();
@@ -60,8 +60,20 @@ while(targetarr.length>0){
     // let largetPrimeFactor = 0
     let pfs = new Set();
     let worklist = [target];
-    // let mt = target;
-    // while(mt > 1 ){
+
+
+    //
+    // we could just stop after we find the first.
+    //
+    // algorithm
+    //
+    // get square root of the target number
+    // get the ceiling (the integer > target)
+    // get the list of primes equal to or less than the ceiling
+    // walk through that list of primes, starting at the largest one
+    // test to see if that leaves a remainder after modulo
+    //
+
     while(worklist.length>0){
         let mt = worklist.shift();
         for( let i=0; i<revprimes.length  ; ++i){
