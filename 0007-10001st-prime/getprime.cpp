@@ -2,8 +2,6 @@
 #include  <cstdlib>
 #include <vector> 
 
-// #include <iterator> // not needed
-// #include <set>      // not needed 
 using namespace std;
 
 int main(int argc, char** argv){
@@ -26,21 +24,12 @@ int main(int argc, char** argv){
     std::vector<int> p;
     p.push_back(2);
 
-    // cout << "outer loop:" << endl;
-
     for( int i=3; p.size()<target; i+=2){
-        // if( 0 == i%100 ) {
         if( i == 11 || i == 101 || i == 1001 || i == 10001 || i == 100001 || i == 200001 ) {
             cout << "    working... testing " << i <<endl;
         }
 
-        // for( int j=1;j<p.size();++j)
-
-        // cout << "  i: " << i << endl;
-        // cout << "  inner loop: " << endl;
-
         bool isItPrime = true;
-        // for( int j : p | std::views::drop(1) ){
         bool first=true;
         for( int j=1; j<p.size(); ++j ){
             // cout << "    p[ j: " << j << " ]: " << p[j] << " << testing i % p[j] "<<endl;
