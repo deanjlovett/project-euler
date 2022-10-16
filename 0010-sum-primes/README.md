@@ -1,5 +1,4 @@
 # project-euler-010-sum-primes
-Project Euler - Find the sum of all the primes below two million.
 
 Project Euler
 
@@ -19,7 +18,6 @@ Completed on Sun, 11 Sep 2022, 18:15
 # How to run:
 
 ### How run the javascript version:
-
 
 ```
 $ node sumprimes.js 

@@ -51,15 +51,27 @@ What is the value of the first triangle number to have over five hundred divisor
 //   return ret;
 // }
 
+//
+// todo: djl,2022-10-16
+// look into recurisive factorization
+//
+
+let factor_map = new Map();
+
 function factor(n){
-  let stop = Math.trunc( Math.sqrt(n) ) + 1;
-  let fct = new Set();
-  for(let i=0; i<=stop; ++i){
+  n = Math.trunc(n);
+  if( factor_map.has(n)){
+    return factor_map.get(n);
+  }
+  let stop = Math.ceil( Math.sqrt(n) );
+  let fct = new Set([1,n]);
+  for(let i=2; i<=stop; ++i){
       if( n % i === 0 ){ 
         fct.add(i);
         fct.add(n/i);
       }
   }
+  factor_map.set(n,fct);
   return fct;
 }
 
@@ -96,23 +108,32 @@ function gethdtri(target){
 driver
 */
 
+const defualt_num = 500;
+
 let msg = [
   'Prints out the value of the first triangle number to have over the number input.',
-  'Default number is 500.'
+  `Default number is ${defualt_num}.`
 ];
-if( ! __.parseCommandLineArgs('hdtri',msg) ) return(0);
+
+if( ! __.parseCommandLineArgs('hdtri',msg) ){
+  return(0);
+} 
 
 let nums = [];
 nums = __.getNumbersFromCommandLine(); 
 
-if( nums.length == 0) nums.push(5);
 clog();
-if(nums.length===0){
-  nums.push(500);
+clog('Print out the value of the first triangle number to have over the number input:')
+clog();
+if(nums.length === 0){
+  clog('No number of command line. Using:',defualt_num);
+  nums.push(defualt_num);
+}else{
+  clog('Numbers from the command line:',nums);
 }
+
 while(nums.length>0){
-  let tar = nums.shift()
-  dlog();
+  let tar = nums.shift();
   let val = gethdtri( tar );
 
   clog();

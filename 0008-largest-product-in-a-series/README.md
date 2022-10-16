@@ -35,8 +35,8 @@ The four adjacent digits in the 1000-digit number that have the greatest product
 
 Find the thirteen adjacent digits in the 1000-digit number that have the greatest product. What is the value of this product?
 
-### How To Run
+# How To Run
 
-# How to run javascript version
+### How to run javascript version
 
 node lp.js
