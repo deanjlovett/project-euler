@@ -1,4 +1,13 @@
 # project-euler-018-max-path-sum-1
+
+Project Euler
+
+Lattice Paths
+
+Problem 18
+
+https://projecteuler.net/problem=18
+
 Find the maximum total from top to bottom of the given triangle
 
 By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.

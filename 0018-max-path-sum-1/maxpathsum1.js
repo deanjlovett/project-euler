@@ -73,6 +73,19 @@ let treearr = [
     ]
 ];
 
+//
+// algorithm used:
+//
+// loop accros 2nd to last row
+// look at the child nodes.
+// add the largest of the two child nodes to that node.
+// move to the next node to the right
+// when row is completed, repeat for the next row up
+//
+// at the end the top most row will have the sum for the max sum path
+//
+// O(n^2) operations
+
 treearr.forEach((thisTree)=>{
     let tree = JSON.parse(JSON.stringify(thisTree));
     console.log();
