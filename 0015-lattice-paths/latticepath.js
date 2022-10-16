@@ -12,7 +12,11 @@ How many such routes are there through a 20×20 grid?
 
 "use strict";
 
-let isDebug = false;
+// todo: djl 2022-10-16
+// use the new-ish util.js stuff
+// let __ = require('../util');
+
+//let isDebug = false;
 
 let x = -1;
 let y = -1;
@@ -31,7 +35,11 @@ let arr = [];
 */
 
 function getlatticepaths(endx,endy){  
-    arr = new Array(endx+1).fill(new Array(endy+1).fill(1));
+    arr = new Array(endx+1)
+        .fill(
+            new Array(endy+1).fill(1)
+        );
+
     arr.forEach(e => console.log('  ',e));
 
     arr.forEach((ex,ix,xarr)=>{

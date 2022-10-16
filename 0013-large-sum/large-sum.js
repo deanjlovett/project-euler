@@ -1,21 +1,32 @@
 /*
+Project Euler
+
+Large sum
+
+Problem 13
+
 https://projecteuler.net/problem=13
 
-Project Euler
-Large Sum
-Problem #13
+file:./readm.html
 
-Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
+Work out the first ten digits of the sum of the following one-hundred 50-digit numbers:
+
+Answer:  5537376230
+Completed on Sun, 18 Sep 2022, 05:53
 
 */
 
 "use strict";
 const {readFileSync,stats, stat} = require('fs');
+let __ = require('../util');
 
-let _isDebug = false;
-function debug_log(...args){
-    if(_isDebug) console.log(...args);
-}
+let debug_log = __.dlog;
+
+//
+// solve the problem
+//
+// easy using javascript's built in BigInt class.
+//
 
 function large_sum(arr1){
     let bnsum = BigInt(0);
@@ -25,11 +36,24 @@ function large_sum(arr1){
     debug_log(); 
     debug_log('data as BigInts:');
     debug_log(arr2);
+
     let ret = arr1
         .map(e => BigInt(e))
         .reduce((a,e)=>a+e,BigInt(0))
+
     return ret;
 }
+
+
+//
+// drivers... stuff to read in data and call the function large_sum()
+//
+
+//
+// todo: djl, 2022-10-16 
+//
+// move syncReadFile to util.js
+//
 
 function syncReadFile(filename) {
     debug_log(); 
@@ -47,28 +71,32 @@ function syncReadFile(filename) {
 
     return arr1;
 }
+const defaultfile = 'data.txt';
+let msg=[
+    'Work out the first ten digits of the sum of the given one-hundred 50-digit numbers.',
+    '',
+    'If no file names are given...',
+    `The following file name will be used: ${defaultfile}`
+];
 
-let filenames = [];
+if(!__.parseCommandLineArgs('large-sum',msg)){
+    return 0;
+}
+let strarr = __.getStringsFromCommandLine();
 
-const myArgs = process.argv.slice(2);
-debug_log('calling args: ',myArgs)
-filenames = myArgs.reduce(
-    (a,ef,i,arr)=>{
-        a.push(ef);
-        return a;
-    },[]
-);
+let filenames = strarr;
 
-debug_log('filenames: ', filenames);
+__.vlog();
+__.vlog('calling args that are strings, and possibly filenames: ', filenames);
 if( filenames.length === 0 ){
-    const defaultfile = 'data.txt';
-    debug_log('no filenames passed in from command line.');
-    debug_log('using: ',defaultfile );
+    __.vlog();
+    __.vlog('no filenames passed in from command line.');
+    __.vlog('using: ',defaultfile );
     filenames.push(defaultfile);
 }
+__.vlog();
 
-debug_log();
-
+__.clog();
 filenames.forEach((e)=>{
     debug_log(`inside filenames.forEach((e: ${e})=>{`)
     
@@ -80,8 +108,6 @@ filenames.forEach((e)=>{
 
     let lrgsm = '' + large_sum( arr );
     let ret = lrgsm.slice(0,10);
-    console.log('first 10 digits of large sum: ');
-    debug_log('0123456789');
-    console.log( ret );
-    console.log();
+    __.clog('first 10 digits of large sum:', parseInt(ret));
+    __.slog(ret)
 });

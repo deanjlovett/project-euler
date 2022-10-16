@@ -93,7 +93,7 @@ function parseCommandLineArgs(name='something',extraArr=[]){
         // let shelp = myArgs[0].toLowerCase();
         // if( shelp === '-h' || '--help')
         console.log();
-        console.log(`usage: node ${name}.js [number ...] [-d | --debug] [-v | --verbose] [-s | --silent]`);
+        console.log(`usage: node ${name}.js [number ...] [string ...] [-d | --debug] [-v | --verbose] [-s | --silent]`);
         console.log();
         console.log('       -d or --debug.  : extra debugging output');
         console.log('       -v or --verbose : extra chatty output');

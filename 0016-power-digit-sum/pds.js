@@ -13,7 +13,7 @@ https://projecteuler.net/problem=16
 What is the sum of the digits of the number 2¹⁰⁰⁰ ( 2^1000 )?
 */
 
-var __ = require('./util');
+let __ = require('../util');
 
 function pds(num){
     let digits = 0;
@@ -37,22 +37,29 @@ function pds(num){
 /*
 test driver
 */
-if( ! __.parseCommandLineArgs('pds') ) return(0);
+const default_value = 1000;
+const msg = [
+    `If no values are given on the command line, the following value is used: ${default_value}`
+];
+if( ! __.parseCommandLineArgs('pds',msg) ){
+    return(0);
+} 
 let nums = __.getNumbersFromCommandLine();
-if( nums.length==0) nums.push(1000)
+if( nums.length==0){
+    nums.push(default_value);
+} 
 
-if(!__.getIsSilent()){console.log();}
+__.clog();
 while(nums.length>0){
     let input = nums.shift(); // shift is pop_front
-    let ret = pds(input);
+
+    let ret = pds(input); // *** <<==  call the problem solving code  ***
+
     let si = (''+input  ).padEnd(6,' ');
     let sd = (''+ret.dig).padEnd(6,' ');
     
-    if(__.getIsSilent()){
-        console.log(ret.sum);
-    }else{
-        console.log(`input: ${si}   digits: ${sd}   sum: `,ret.sum);
-    }
+    __.clog(`input: ${si}   digits: ${sd}   sum: `,ret.sum);
+    __.slog(ret.sum); // only prints if "-s" flag is used
 }
 
 
