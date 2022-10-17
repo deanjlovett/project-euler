@@ -1,5 +1,5 @@
 'use strict';
-let __ = require('./util');
+let __ = require('../util');
 
 /*
 Project Euler

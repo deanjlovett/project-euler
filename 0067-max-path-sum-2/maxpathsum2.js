@@ -33,6 +33,25 @@ const {readFileSync,stats, stat} = require('fs');
 let isDebug = false;
 
 
+//
+// algorithm used:
+//
+// loop accros 2nd to last row
+// look at the child nodes.
+// add the largest of the two child nodes to that node.
+// move to the next node to the right
+// when row is completed, repeat for the next row up
+//
+// at the end the top most row will have the sum for the max sum path
+//
+// O(n^2) operations, where n is the number of rows in the tree
+//
+// note: tree reading is not robust.  There cannot be a blank line at the end
+//
+// todo: djl, 2022-10-16
+//  make tree reading more robust
+//
+
 function maxpathsum2(thisTree){
     let tree = JSON.parse(JSON.stringify(thisTree));
     // console.log();
@@ -58,6 +77,10 @@ function syncReadFile(filename) {
     console.log(arr); 
 
     for( let i=0; i<arr.length; ++i ){
+        if(arr[i].length===0 ){
+            continue;
+        }
+        let tmp = 
         arr[i] = arr[i]
             .split(' ')
             .reduce( (a,e,i,ar)=>{ a.push(parseInt(e)); return a; },[]);            
@@ -83,12 +106,15 @@ filenames = myArgs.reduce(
     },[]
 );
 
+const defaultfile = 'triangle-small.txt';
+const defaultfile_bigdata = 'triangle-large.txt'
 console.log('filenames: ', filenames);
 if( filenames.length === 0 ){
-    const defaultfile = 'triangle-small.txt';
     console.log('no filenames passed in from command line.');
     console.log('using: ',defaultfile );
+    console.log('using: ',defaultfile_bigdata );
     filenames.push(defaultfile);
+    filenames.push(defaultfile_bigdata)
     // console.log('filenames: ', filenames);
 }
 
