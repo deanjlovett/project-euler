@@ -22,5 +22,11 @@ Thumbs.db
 # the usual suspects for 
 node_modules
 
+# debug symbol folder
+*.dSYM
+
+# cpp exe file on mac
+*.mac
+
 # other odds and ends
 *scratch*

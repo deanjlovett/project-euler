@@ -19,8 +19,8 @@ node mult3or5.js
 
 ### To compile in C++, on Mac OS:
 
-g++ mult3or5.cpp -o mult3or5.app
+g++ mult3or5.cpp -o mult3or5.cpp.mac -lm
 
 ### To run C++ version, on Mac OS:
 
-mult3or5.app
+mult3or5.cpp.mac

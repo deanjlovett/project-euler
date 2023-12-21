@@ -9,9 +9,8 @@ $ ln -s ../util util
 
 
 to use in a file... include this line:
-let __ = require('./util');
-or
-let __ = require('./util/util');
+
+let __ = require('../util');
 
 */
 
@@ -20,24 +19,51 @@ let __ = require('./util/util');
  * begin
 **/
 
-let isSilent  = false;
-let isVerbose = false;
-let isDebug   = false;
+let _isSilent  = false;
+let _isVerbose = false;
+let _isDebug   = false;
+let _inFile    = '';
+let _outFile   = '';
+let _otherFile = '';
+let _validateFile = '';
 
-function setSilent(val=true)  {isSilent=val};
-function setVerbose(val=true) {isVerbose=val};
-function setDebug(val=true)   {isDebug=val};
+function setSilent(val=true)  {_isSilent=val};
+function setVerbose(val=true) {_isVerbose=val,console.log("setVerbose:",_isVerbose)};
+function setDebug(val=true)   {_isDebug=val;console.log("setDebug:",_isDebug)};
 
-function getIsSilent()  {return isSilent};
-function getIsVerbose() {return isVerbose};
-function getIsDebug()   {return isDebug};
+function getIsSilent()  {return _isSilent};
+function getIsVerbose() {return _isVerbose};
+function getIsDebug()   {return _isDebug};
 
-function progdot(){ if(!isSilent) process.stdout.write('.');}
+function progdot(){ if(!_isSilent) process.stdout.write('.');}
 
-function clog(...args){ if(             !isSilent) console.log(...args);}
-function dlog(...args){ if(isDebug   && !isSilent) console.log(...args);}
-function vlog(...args){ if(isVerbose && !isSilent) console.log(...args);}
-function slog(...args){ if(              isSilent) console.log(...args);}
+function clog(...args){ if(              !_isSilent) console.log(...args);}
+function dlog(...args){ if(_isDebug   && !_isSilent) console.log(...args);}
+function vlog(...args){ if(_isVerbose && !_isSilent) console.log(...args);}
+function slog(...args){ if(               _isSilent) console.log(...args);}
+
+function setInputFilename(s){_inFile=s;}
+function getInputFilename(){return _inFile;}
+
+function setOutputFilename(s){_outFile=s;}
+function getOutputFilename(){return _outFile;}
+
+function setOtherFilename(s){_otherFile=s;}
+function getOtherFilename(){return _otherFile;}
+
+function setValidateFilename(s){_validateFile=s;}
+function getValidateFilename(){return _validateFile;}
+
+let _range = {first:0,last:0,inc:0}
+
+function setRange(first,last,inc){
+  _range.first = parseInt(first);
+  _range.last  = parseInt(last);
+  _range.inc   = parseInt(inc);
+}
+function getRange(){
+  return _range;
+}
 
 /*
  * end
@@ -56,37 +82,89 @@ function parseCommandLineArgs(name='something',extraArr=[]){
     let smyArgs = myArgs.slice(); // save a copy
 
     /*
-    hey look, it is data drive
-    note:  add flags and functtion to set them, here
+    hey look, it is data driven
+    note:  add flags and function to set them, here
     note:  the area _nums hold any INTEGERS found
     */
     let arglist = [
-      {key:['-d','--debug'  ], val: setDebug   },
-      {key:['-v','--verbose'], val: setVerbose },
-      {key:['-s','--silent' ], val: setSilent  },
+      {key:['-d','--debug'                ], params:0, val: setDebug   },
+      {key:['-v','--verbose'              ], params:0, val: setVerbose },
+      {key:['-s','--silent'               ], params:0, val: setSilent  },
+      {key:['-i','--in','--input'         ], params:1, val: setInputFilename  },
+      {key:['-o','--out','--output'       ], params:1, val: setOutputFilename  },
+      {key:['-f','--file'                 ], params:1, val: setOtherFilename  },
+      {key:['--val','--valid','--validate'], params:1, val: setValidateFilename  },
+      {key:['-r','--range'                ], params:3, val: setRange },
+
     ];
 
     let argmap = new Map();
     arglist.forEach((e,i,arr)=>{
       e.key.forEach((v)=>{
-        argmap.set( v.toLowerCase(), e.val);
+        // argmap.set( v.toLowerCase(), e.val);
+        argmap.set( v.toLowerCase(), e );
       });
     });
-    myArgs.forEach((e,i,arr)=>{
+    clog('argmap:',argmap)
+    let skipNext = false;
+    // myArgs.forEach((e,i,arr)=>{
+    while(myArgs.length>0){
+      let e = myArgs.shift();
+      clog('arg:',e)
+      // if( skipNext ){
+      //   skipNext = false;
+      //   return;
+      // }
       let se = e.toLowerCase();
       let testNum   = parseInt(e);
       if( argmap.has(se) ) {
-        argmap.get(se)(); // look it up and call it.
+        clog('  argmap.has(se):',se)
+        let obj = argmap.get(se);
+        clog('  obj = argmap.get(se):',obj)
+        switch( obj.params ){
+
+          case 0:
+            obj.val(); // look it up and call it.
+            break;
+
+          case 1:
+            // if(arr.length-1>=i+1){
+            //   obj.val(arr[i+1])
+            //   skipNext = true;
+            // }
+            if(myArgs.length>0){
+              let nextArg = myArgs.shift();
+              obj.val(nextArg)
+            }
+            break;
+
+          default:
+            // error
+        }
       }else if(!isNaN(testNum)){
         _nums.push(testNum);
-        _strarr.push(e);
+        _strarr.push(e); // yeah... we push numbers on to string array
       }else if(e.charAt(0)=='-'){
-        isError = true;
-        unknownArgs.push(e);
+        if( e.includes(':')){
+          let sparr = e.split(':');
+          while(sparr.length>0){
+            myArgs.unshift( sparr.pop() )
+          }
+        }
+        else if( e.charAt(1) !== '-' && e.length > 2 ){
+          let sparr = e.split('');
+          sparr.shift(); // pop front that '-'
+          while(sparr.length>0){
+            myArgs.unshift( '-' + sparr.pop() )
+          }
+        }else{
+          isError = true;
+          unknownArgs.push(e);
+        }
       }else{
         _strarr.push(e);
       }
-    });
+    }    
     if(isError || unknownArgs.length > 0){
         console.log();
         console.log('unknown args:',unknownArgs )
@@ -98,6 +176,13 @@ function parseCommandLineArgs(name='something',extraArr=[]){
         console.log('       -d or --debug.  : extra debugging output');
         console.log('       -v or --verbose : extra chatty output');
         console.log('       -s or --silent  : only output the answer');
+        console.log();
+        console.log('       -i or --input     filename  : filename with input data');
+        console.log('       -o or --output    filename  : filename with output data');
+        console.log('       -f or --file      filename  : filename with other data');
+        console.log('       -v or --validate  filename  : filename with validation data');
+        console.log();
+        console.log('       -r or --range first last increment : a range of integers to use');
         console.log();
         extraArr.forEach((e,i,arr)=>{
             console.log(e);
@@ -112,9 +197,15 @@ function parseCommandLineArgs(name='something',extraArr=[]){
     dlog()
     dlog('calling args: ',smyArgs)
     dlog()
-    if(isVerbose) clog('verbose set to TRUE')
-    if(isDebug)   clog('  debug set to TRUE')
-    if(_nums.length>0)   dlog(' integers found on command line:', _nums);
+    if(_inFile.length>0)       clog('    input filename:', _inFile  )
+    if(_outFile.length>0)      clog('   output filename:', _outFile )
+    if(_otherFile.length>0)    clog('    other filename:', _otherFile )
+    if(_validateFile.length>0) clog(' validate filename:', _otherFile )
+    if(_isVerbose)             clog('    verbose set to:', _isVerbose)
+    if(_isDebug)               clog('      debug set to:', _isDebug)
+    if(_range.inc !== 0)       clog('   range is set to:', _range)
+    if(_strarr.length)         clog(' strings found on command line (includes integers)', _strarr)
+    if(_nums.length>0)         dlog(' integers found on command line:', _nums);
     return true;
 }
 
@@ -154,6 +245,7 @@ module.exports = {
   // isSilent, isDebug, isVerbose,
   setSilent, setVerbose, setDebug,
   getIsSilent, getIsVerbose, getIsDebug,
+  setRange, getRange,
   progdot,
   clog, dlog, vlog, slog,
   getNumbersFromCommandLine,

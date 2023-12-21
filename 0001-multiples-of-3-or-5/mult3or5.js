@@ -56,6 +56,20 @@ div by 3 or 5          3     5  6        9 10    12       15       18    20 21  
 
 */
 
+function mult3or5_fast(below){
+    c3   = (below-1)/3;          // count of div by 3 less than below
+    sum3 =  3 *  c3 * ( c3+1)/2; // n(n+1)/2
+
+    c5   = (below-1)/5;          // count of div by 5
+    sum5 =  5 *  c5 * ( c5+1)/2;
+
+    c15   = (below-1)/15;          // count of div by 15
+    sum15 = 15 * c15 * (c15+1)/2;
+
+    return sum3 + sum5 - sum15;
+}
+
+
 function mult3or5(below){
     let sum=0;
     for(let i=3; i<below;++i){
