@@ -24,3 +24,6 @@ node_modules
 
 # other odds and ends
 *scratch*
+*.app 
+*.mac 
+*.dSYM

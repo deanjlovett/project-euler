@@ -17,3 +17,10 @@ What is the 10 001st prime number?
 ### To Run javascript version:
 
 node getprime.js
+
+## c++
+### To compile cpp version:
+g++ -g gp2.cpp -o gp2.cpp.mac -lm
+
+### To run cpp version:
+./gp2.cpp.mac
