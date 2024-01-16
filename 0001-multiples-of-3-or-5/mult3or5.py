@@ -73,39 +73,103 @@ def mult3or5(below:int)->int:
 #
 #    sum3or5 = sum3 + sum5 - sum15; 
 
+def sum_nto1(n:int)->int: # n(n+1)/2 == sum of n..1
+    return (n*(n+1))//2
 
 def fast_mult3or5(below:int)->int:
     #print(f"inside mult3or5_fast(below:int == {below})")
+    mb = below-1
 
-    c3   = math.trunc( (below-1)/3 )         # count of div by 3 less than below
-    sum3 =  3 * math.trunc( c3 * ( c3+1)/2); # n(n+1)/2 == sum of n..1
-    c5   = int((below-1)/5)                  # count of div by 5
-    sum5 =  5 *  math.trunc((c5 * (c5+1))/2) # n(n+1)/2 == sum of n..1
-    c15   = math.trunc((below-1)/15)         # count of div by 15
-    sum15 = 15 * math.trunc(c15 * (c15+1)/2) # n(n+1)/2 == sum of n..1
+    c3    =  mb // 3       # count of div by 3 less than below
+    c5    =  mb // 5       # count of div by 5
+    c15   =  mb // 15      # count of div by 15
+    sum3  =  3 * sum_nto1( c3)
+    sum5  =  5 * sum_nto1( c5)
+    sum15 = 15 * sum_nto1(c15)
 
-    return sum3 + sum5 - sum15
+    return sum3 + sum5 - sum15 
+
+    # c3    =      math.trunc( (below-1) /  3 )      # count of div by 3 less than below
+    # sum3  =  3 * math.trunc( c3 * ( c3+1)/2 ); # n(n+1)/2 == sum of n..1
+    # c5    =      math.trunc( (below-1) /  5 )      # count of div by 5
+    # sum5  =  5 * math.trunc((c5 * (c5+1))/2 ) # n(n+1)/2 == sum of n..1
+    # c15   =      math.trunc( (below-1) / 15 )      # count of div by 15
+    # sum15 = 15 * math.trunc(c15 * (c15+1)/2 )  # n(n+1)/2 == sum of n..1
+
+def fizzbuzz(stop:int) -> None :
+    print("FizzBuzz time !!!")
+    print()
+    for n in range(stop+1):
+        s = ""
+        if n%3==0:
+            s = "Fizz"
+        if n%5==0:
+            s += "Buzz"
+        if len(s)==0:
+            s = str(n)
+        print(s)
+
+def fizzbuzz_simple(stop:int) -> None :
+    print("FizzBuzz time !!!")
+    print()
+    for n in range(stop+1):
+        b3 = n%3==0
+        b5 = n%5==0
+        if b3 and b5:
+            print("FizzBuzz") 
+        elif b3:
+            print("Fizz")
+        elif b5:
+            print("Buzz")
+        else:
+            print(str(n))
+
+
+def do_mult3or5_stuff(below):
+    r_mult3or5      =      mult3or5(below)
+    r_fast_mult3or5 = fast_mult3or5(below)
+    print()
+    print(f"Find the sum of all the multiples of 3 or 5 below {below}")
+    print()
+    print(f"slow O(n) method: {r_mult3or5}" )
+    print()
+    print(f"fast O(c) method: {r_fast_mult3or5}" )
+    print()
+    print(f"fast-slow methods: {r_fast_mult3or5-r_mult3or5}" )
+    print()
+
+def print_usage():
+    print()
+    print(f"usage: mult3or5 [--fizzbuzz] [some number]")
+    print()
+    print("  if fizzbuzz flag then pring standard fizzbuzz for 'some number'")
+    print("  else print the sum of all the multiples of 3 or 5 below 'some number'")
+    print()
+    print("  if [some number] is not provided, 1000 will be used.")
+    print()
+    exit(0)
 
 
 below = 1000
-if  len(sys.argv) > 1:
-    argone = sys.argv[1]
-    if argone in ["-?","-h","--help"]:
-        print()
-        print(f"usage: {argone} [some number]")
-        exit(0)
+if len(sys.argv) == 1:
+    do_mult3or5_stuff(below)
+
+else: #  len(sys.argv) > 1:
+    argone = sys.argv[1].lower()
+
     if argone.isdigit():
         below = int(argone)
+        do_mult3or5_stuff()
+
+    elif argone in ["-f","--fb","--fizzbuzz"]:
+        if len(sys.argv)>2 and sys.argv[2].isdigit:
+            fizzbuzz(int(sys.argv[2]))
+        else:
+            fizzbuzz(below)
+
     else:
-        print()
-        print(f"argument '{argone}' is not a number or parsable as a number. Using {below}")
-r_mult3or5      =      mult3or5(below)
-r_fast_mult3or5 = fast_mult3or5(below)
-print()
-print(f"Find the sum of all the multiples of 3 or 5 below {below}")
-print()
-print(f"slow O(n) method: {r_mult3or5}" )
-print()
-print(f"fast O(c) method: {r_fast_mult3or5}" )
-print()
-print(f"fast-slow methods: {r_fast_mult3or5-r_mult3or5}" )
+        print_usage()
+        # print()
+        # print(f"argument '{argone}' is not a number or parsable as a number. Using {below}")
+        # if argone in ["-?","-h","--help"]:
+    
