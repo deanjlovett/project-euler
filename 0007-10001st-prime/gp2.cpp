@@ -29,7 +29,13 @@ int main(int argc, char** argv){
 
     for( int test_prime=3; p.size()<target; test_prime += 2){
         // if( test_prime == 11 || test_prime == 101 || test_prime == 1001 || test_prime == 10001 || test_prime == 100001 || test_prime == 200001 ) {
-            cout << "    working... testing " << test_prime <<endl;
+        //     cout << "    working... testing " << test_prime <<endl;
+        // }
+        bool print_debug = false;
+        // if( ((p.size()>>12)<<12) == p.size() ) {
+        //     print_debug = true;
+        //     cout << "    working... testing " << test_prime 
+        //          << "    p.size(): " << p.size() << endl;
         // }
 
         bool isItPrime = true;
@@ -37,11 +43,15 @@ int main(int argc, char** argv){
         int stop = ceil( sqrt(double(test_prime)));
         for( int j=1; j<p.size(); ++j ){
             if( p[j]>stop ){
-                cout << "    stopping early at index: [" << j << "] of [" 
-                    <<  p.size() << "]. test value["<< test_prime 
-                    << "], stop value: "<< stop << " " << stop*stop << endl;
                 break;
             }
+
+            // if( p[j]>stop && print_debug){
+            //     cout << "    stopping early at index: [" << j << "] of [" 
+            //         <<  p.size() << "]. test value["<< test_prime 
+            //         << "], stop value: "<< stop << " " << stop*stop << endl;
+            //     break;
+            // }
             // cout << "    p[ j: " << j << " ]: " << p[j] << " << testing test_prime % p[j] "<<endl;
             if( 0 == test_prime % p[j] ) {
                 isItPrime = false;
