@@ -21,6 +21,7 @@ Completed on Fri, 9 Sep 2022, 21:39
 
 */
 
+
 int main(int argc, char** argv){
     cout << "argc: " << argc << endl;
     for (int i=0; i<argc; ++i) {
@@ -76,3 +77,48 @@ int main(int argc, char** argv){
     }
     return 0;
 }
+
+// notes to myself about adding a dynamic array
+//
+// stolen from this post:
+// https://stackoverflow.com/questions/3536153/c-dynamically-growing-array
+
+typedef struct {
+  int *array;
+  size_t used;
+  size_t size;
+} Array;
+
+void initArray(Array *a, size_t initialSize) {
+  a->array = malloc(initialSize * sizeof(int));
+  a->used = 0;
+  a->size = initialSize;
+}
+
+void insertArray(Array *a, int element) {
+  // a->used is the number of used entries, because a->array[a->used++] updates a->used only *after* the array has been accessed.
+  // Therefore a->used can go up to a->size 
+  if (a->used == a->size) {
+    a->size *= 2;
+    a->array = realloc(a->array, a->size * sizeof(int));
+  }
+  a->array[a->used++] = element;
+}
+
+void freeArray(Array *a) {
+  free(a->array);
+  a->array = NULL;
+  a->used = a->size = 0;
+}
+// Using it is just as simple:
+//
+Array a;
+int i;
+
+initArray(&a, 5);  // initially 5 elements
+for (i = 0; i < 100; i++) {
+  insertArray(&a, i);  // automatically resizes as necessary
+}
+printf("%d\n", a.array[9]);  // print 10th element
+printf("%d\n", a.used);  // print number of elements
+freeArray(&a);
