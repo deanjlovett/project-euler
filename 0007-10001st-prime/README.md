@@ -22,5 +22,9 @@ node getprime.js
 ### To compile with g++:
 g++ -g gp2.cpp -o gp2.cpp.mac -lm
 
+g++ -g gp3.cpp -o gp3.cpp.mac -lm
+clang++ -std=c++11 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
+
+
 ### To run  version:
 ./gp2.cpp.mac

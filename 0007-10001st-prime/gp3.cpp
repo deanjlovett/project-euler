@@ -1,21 +1,25 @@
-#include <iostream>
-#include <cstdlib>
-#include <vector>
-
 #include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <stdio.h>
+#include <time.h>
+#include <vector>
 
 using namespace std;
 
 std::vector<int> primes={2,3,5,7};
 
 bool check_prime(int test_prime,int &chk_idx_stop,int &chk_sqr){
+  //bool check_prime(int test_prime,int *pchk_stop,int &chk_sqr){
   // int stop = ceil( sqrt(double(test_prime)));
 
   while(chk_sqr<test_prime){
-    chk_sqr = primes[++chk_idx_stop]*primes[chk_idx_stop];
+    ++chk_idx_stop;
+    chk_sqr = primes[chk_idx_stop];
+    chk_sqr *= chk_sqr;
   }
   for( int j=2; j<primes.size(); ++j ){
-      if( primes[j]>chk_idx_stop ){
+      if( j > chk_idx_stop ){
           break;
       }
       if( 0 == test_prime % primes[j] ) {
@@ -24,8 +28,71 @@ bool check_prime(int test_prime,int &chk_idx_stop,int &chk_sqr){
   }
   return true;
 }
+int getPrimeAtIndex(int target_index){
+  int prime=-1;
+  if (primes.size()>target_index){
+    return primes[target_index];
+  }
+  int test_prime = 11, 
+    chk_idx_stop = 2, 
+    chk_sqr = 25;
 
-auto getPrimeAtIndex(int target_index){
+  time_t last_time = time(NULL);
+
+  // for( ; primes.size()<target_index; test_prime += 2) {
+  int i=1,iprint=1;
+  while(true){
+    if ( check_prime(test_prime,chk_idx_stop,chk_sqr) ){
+      primes.push_back(test_prime);
+    }
+    test_prime += 4;
+    if ( check_prime(test_prime,chk_idx_stop,chk_sqr) ){
+      primes.push_back(test_prime);
+    }
+    if( primes.size()>=target_index ) {
+      break;
+    }
+    test_prime += 2;
+    if( i>=iprint ){
+      time_t this_time = time(NULL);
+      if( this_time-last_time < 5 ){
+        iprint = iprint * 2; //<<= 1;
+      }else{
+        i=1;
+        last_time=this_time;
+        cout <<        "index:" << primes.size() 
+             << ", test_prime:" << test_prime << endl;
+      }
+    }
+  }
+  return prime;
+}
+
+bool check_prime2(int test_prime,int &chk_idx_stop,int &chk_sqr){
+  // int stop = ceil( sqrt(double(test_prime)));
+
+  auto v=primes;
+  auto stop=v.cbegin() + chk_idx_stop;
+  
+  while(chk_sqr<test_prime){
+    ++chk_idx_stop;
+    ++stop;
+    chk_sqr = *stop;
+    chk_sqr *= chk_sqr;
+  }
+  
+  for( auto it = v.cbegin() + 2; it != v.end(); ++it ){
+    if( *it > *stop){
+      break;
+    }
+    if( 0 == test_prime % *it) {
+      return false;
+    }
+  }
+  return true;
+}
+
+int getPrimeAtIndex2(int target_index){
   int prime=-1;
   if (primes.size()>target_index){
     return primes[target_index];
@@ -61,53 +128,12 @@ int main(int argc, char** argv){
             target = test;
         }
     }
+    auto the_prime = getPrimeAtIndex(target);
 
-    int stopit = target+1;
-    std::vector<int> p;
-    p.push_back(2);
-
-
-    for( int test_prime=3; p.size()<target; test_prime += 2){
-        // if( test_prime == 11 || test_prime == 101 || test_prime == 1001 || test_prime == 10001 || test_prime == 100001 || test_prime == 200001 ) {
-        //     cout << "    working... testing " << test_prime <<endl;
-        // }
-        bool print_debug = false;
-        // if( ((p.size()>>12)<<12) == p.size() ) {
-        //     print_debug = true;
-        //     cout << "    working... testing " << test_prime 
-        //          << "    p.size(): " << p.size() << endl;
-        // }
-
-        bool isItPrime = true;
-        // bool first=true;
-        int stop = ceil( sqrt(double(test_prime)));
-        for( int j=1; j<p.size(); ++j ){
-            if( p[j]>stop ){
-                break;
-            }
-
-            // if( p[j]>stop && print_debug){
-            //     cout << "    stopping early at index: [" << j << "] of [" 
-            //         <<  p.size() << "]. test value["<< test_prime 
-            //         << "], stop value: "<< stop << " " << stop*stop << endl;
-            //     break;
-            // }
-            // cout << "    p[ j: " << j << " ]: " << p[j] << " << testing test_prime % p[j] "<<endl;
-            if( 0 == test_prime % p[j] ) {
-                isItPrime = false;
-                // cout << "    test_prime: " << test_prime << " is div by: " << p[j] << " !  " << test_prime << " is NOT prime!" << endl;
-                break;
-            }
-        }
-        if( !isItPrime ) 
-            continue;
-
-        // cout << "    test_prime: " << test_prime << " is prime" << endl;
-        p.push_back(test_prime);
-    }
     cout << endl;
     int ind=1;
     bool makeabreak=true;
+    auto p=primes;
     for( auto it=p.begin(); it != p.end(); ++it,++ind){
         if( ind<6 || target-ind<6 ){
             cout << "  p[ " << ind << " ]: " << *it << endl;
