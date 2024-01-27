@@ -67,8 +67,7 @@ int getPrimeAtIndex(int target_index){
         last_time=this_time;
         time_t total_time = last_time-first_time;
         std::cout.imbue(std::locale(""));
-        std::cout 
-             <<        "index: " << primes.size() 
+        cout <<        "index: " << primes.size() 
              << "  test_prime: " << test_prime 
              << "  diff: " << diff_time
              << "  ip: " << iprint
@@ -86,22 +85,22 @@ bool check_prime2(int test_prime,int &chk_idx_stop,int &chk_sqr){
   // int stop = ceil( sqrt(double(test_prime)));
 
   while(chk_sqr<=test_prime){
-    std::cout << "  chk_sqr <= test_prime :: " << chk_sqr << " <= " << test_prime << endl;
-    std::cout << "    chk_idx_stop == " << chk_idx_stop << "  primes[chk_idx_stop]: " << primes[chk_idx_stop] << endl;
+    cout << "  chk_sqr <= test_prime :: " << chk_sqr << " <= " << test_prime << endl;
+    cout << "    chk_idx_stop == " << chk_idx_stop << "  primes[chk_idx_stop]: " << primes[chk_idx_stop] << endl;
     ++chk_idx_stop;
-    std::cout << "    chk_idx_stop == " << chk_idx_stop << "  primes[chk_idx_stop]: " << primes[chk_idx_stop] << endl;
+    cout << "    chk_idx_stop == " << chk_idx_stop << "  primes[chk_idx_stop]: " << primes[chk_idx_stop] << endl;
     chk_sqr = primes[chk_idx_stop+1];
     chk_sqr *= chk_sqr;
-    std::cout << "         chk_sqr == " << chk_sqr << endl << endl;
+    cout << "         chk_sqr == " << chk_sqr << endl << endl;
   }
   for( int j=2; j<primes.size(); ++j ){
       if( j > chk_idx_stop ){
           break;
       }
-      std::cout << "    checking p[" << j << "]: " << primes[j] << endl;
+      cout << "    checking p[" << j << "]: " << primes[j] << endl;
 
       if( 0 == test_prime % primes[j] ) {
-        std::cout << "      test_prime: " << test_prime << " has " << primes[j] << " as a factor." << endl;
+        cout << "      test_prime: " << test_prime << " has " << primes[j] << " as a factor." << endl;
 
         return false;
       }
@@ -109,13 +108,13 @@ bool check_prime2(int test_prime,int &chk_idx_stop,int &chk_sqr){
   return true;
 }
 void check_n_push2(int test_prime,int &chk_idx_stop,int &chk_sqr){
-    std::cout << "  -----------------------------" << endl;
-    std::cout << "  test_prime :: " << test_prime << endl;
+    cout << "  -----------------------------" << endl;
+    cout << "  test_prime :: " << test_prime << endl;
     if ( check_prime2(test_prime,chk_idx_stop,chk_sqr) ){
       primes.push_back(test_prime);
-      std::cout << "    pushed onto prime list :: " << test_prime << endl << endl;
+      cout << "    pushed onto prime list :: " << test_prime << endl << endl;
     } else {
-      std::cout << "    discarded. " << test_prime << " is not prime." << endl << endl;
+      cout << "    discarded. " << test_prime << " is not prime." << endl << endl;
     }
 }
 int getPrimeAtIndex2(int target_index){
@@ -132,7 +131,7 @@ int getPrimeAtIndex2(int target_index){
   // while(true){
   int i=1,iprint=1;
   for( ; primes.size()<target_index; test_prime += 4) {
-    std::cout << "  =============================" << endl;
+    cout << "  =============================" << endl;
 
     check_n_push2( test_prime, chk_idx_stop, chk_sqr );
 
@@ -150,8 +149,8 @@ int getPrimeAtIndex2(int target_index){
       }else{
         i=1;
         last_time=this_time;
-        std::cout <<        "index:" << primes.size() 
-                  << ", test_prime:" << test_prime << endl;
+        cout <<        "index:" << primes.size() 
+             << ", test_prime:" << test_prime << endl;
       }
     }
   }
@@ -215,6 +214,8 @@ long getPrimeAtIndex3(long target_index){
     idx_stop = 0,
     idx_prime = p[idx];
 
+  printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
+
 	while(p.size() < target_index){
     ++idx;
 		long test_idx = idx;
@@ -224,9 +225,9 @@ long getPrimeAtIndex3(long target_index){
 		next_bs   = bs * idx_prime;
 		// long next_bs_stop = trunc(sqrt((double)next_bs)) + 1;
 
-		std::cout << idx << " " << p[idx] << " len(p): " << len(p) << endl;
+		std::cout << "  " << idx << " " << p[idx] << " len(p): " << len(p) << endl;
 
-		std::cout << "for(long i=1; i<idx_prime; ++i) {" << endl;
+		printf("  for(long i=1; i<idx_prime:%ld; ++i) {/n",idx_prime);
 
 		for(long i=1; i<idx_prime; ++i) {
 				long inc = bs*i;
@@ -256,8 +257,7 @@ long getPrimeAtIndex3(long target_index){
 								last_time=this_time;
 								time_t total_time = last_time-first_time;
 								std::cout.imbue(std::locale(""));
-								std::cout
-										<< "index: " << primes.size() 
+								cout <<        "index: " << primes.size() 
 										<< "  test_prime: " << test_prime 
 										<< "  diff: " << diff_time
 										<< "  ip: " << iprint
@@ -329,12 +329,12 @@ int main(int argc, char** argv){
     cout << "Size of long double: " << sizeof(double)    << " bytes" << endl;
     cout << endl;
 
-    auto the_prime = getPrimeAtIndex(target);
+    auto the_prime = getPrimeAtIndex3(target);
 
     cout << endl;
     int ind=1;
     bool makeabreak=true;
-    auto p=primes;
+    //auto p=primes;
     for( auto it=p.begin(); it != p.end(); ++it,++ind){
         if( ind<6 || target-ind<6 ){
             cout << "  p[ " << ind << " ]: " << *it << endl;
