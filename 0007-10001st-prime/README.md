@@ -24,7 +24,13 @@ g++ -g gp2.cpp -o gp2.cpp.mac -lm
 
 g++ -g gp3.cpp -o gp3.cpp.mac -lm
 clang++ -std=c++11 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
+clang++ -std=c++13 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
+clang++ -std=c++17 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
+clang++ -std=c++20 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
+clang++ -std=c++20 -stdlib=libc++ gp4.cpp -o gp4.cpp.mac
 
 
 ### To run  version:
 ./gp2.cpp.mac
+./gp3.cpp.mac
+./gp4.cpp.mac
