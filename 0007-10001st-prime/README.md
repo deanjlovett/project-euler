@@ -28,6 +28,7 @@ clang++ -std=c++13 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
 clang++ -std=c++17 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
 clang++ -std=c++20 -stdlib=libc++ gp3.cpp -o gp3.cpp.mac
 clang++ -std=c++20 -stdlib=libc++ gp4.cpp -o gp4.cpp.mac
+clang++ -std=c++20 -stdlib=libc++ gp5.cpp -o gp5.cpp.mac
 
 
 ### To run  version:

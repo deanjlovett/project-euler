@@ -243,11 +243,11 @@ bool validate_prime_range(long pos_prime, std::vector<long> p, long idx){
 long getPrimeAtIndex3(long target_index){
 
 	std::cout << "getPrimeAtIndex3" << endl;
+	std::cout << "target_index: " << target_index << endl;
 
 	time_t first_time = time(NULL);
 	time_t last_time = first_time;
 	long i=0, iprint=1;
-
 
   long 
     bs = 2 * 3,
@@ -259,6 +259,8 @@ long getPrimeAtIndex3(long target_index){
   printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
 
 	while(p.size() < target_index){
+    //printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
+
     ++idx;
 		long test_idx = idx;
 		idx_stop  = p.size();
@@ -269,32 +271,38 @@ long getPrimeAtIndex3(long target_index){
 
 		std::cout << "  " << idx << " " << p[idx] << " len(p): " << len(p) << endl;
 
-		printf("  for(long i=1; i<idx_prime:%ld; ++i) {/n",idx_prime);
+		printf("  for(long i=1; i<idx_prime:%ld; ++i) {\n",idx_prime);
 
+    long k=1,kprint=1;
 		for(long i=1; i<idx_prime; ++i) {
+		    printf("    i:%ld < idx_prime:%ld\n",i,idx_prime);
 				long inc = bs*i;
 				long test_prime = 1 + inc;
 				if( validate_prime_range(test_prime,p,idx) ){
 						p.push_back(test_prime);
+            cout << "        prime push:"<<test_prime <<endl;
 				}
+        printf("    for( long j=idx:%ld; j<idx_stop:%ld; ++j ){\n",idx,idx_stop);
 				for( long j=idx; j<idx_stop; ++j ){
 					test_prime = p[j] + inc;
+          printf("      j:%ld  p[j]:%ld  inc:%ld  test_prime:%ld\n",j,p[j],inc,test_prime);
 					if(validate_prime_range(test_prime,p,idx)){
 						p.push_back(test_prime);
+            cout << "        prime push:"<<test_prime <<endl;
 
 						///////////////////////////
-						if( ++i >= iprint ){
+						if( ++k >= kprint ){
 							// cout << i << endl;
 							time_t this_time = time(NULL);
 							if( this_time-last_time < 5 ){
 								// cout << i << endl;
 								// iprint = iprint * 2; //<<= 1;
-								iprint <<= 1;
+								kprint <<= 1;
 							}else{
-								i=1;
+								k=1;
 								time_t diff_time = this_time-last_time; 
 								if(diff_time>10){
-									iprint >>= 1;
+									kprint >>= 1;
 								}
 								last_time=this_time;
 								time_t total_time = last_time-first_time;
@@ -302,7 +310,7 @@ long getPrimeAtIndex3(long target_index){
 								cout <<        "index: " << primes.size() 
 										<< "  test_prime: " << test_prime 
 										<< "  diff: " << diff_time
-										<< "  ip: " << iprint
+										<< "  kp: " << kprint
 										<< "  runtime: " << total_time/60 <<" minutes, " << total_time % 60 << " seconds" << endl;
 							}
 						}
@@ -374,11 +382,13 @@ int main(int argc, char** argv){
     auto the_prime = getPrimeAtIndex3(target);
 
     cout << endl;
-    int ind=1;
+    long ind=1;
+    long end=p.size();
     bool makeabreak=true;
     //auto p=primes;
     for( auto it=p.begin(); it != p.end(); ++it,++ind){
-        if( ind<6 || target-ind<6 ){
+        // if( ind<6 || (target-ind)<6 ){
+        if( ind<7 || (end-ind)<6 ){
             cout << "  p[ " << ind << " ]: " << *it << endl;
         }
         else if( makeabreak ) {
