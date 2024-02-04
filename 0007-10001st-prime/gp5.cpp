@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
@@ -226,19 +227,38 @@ typedef long myint;
 13 x 13 = 169
 */
 std::vector<long> p = {2,3,5,7,11,13,17,19,23,29};
+long last_idx=0;
 
 size_t len(std::vector<long> mv) { return mv.size();}
 
-bool validate_prime_range(long pos_prime, std::vector<long> p, long idx){
-	long stop = trunc( sqrt( (double)pos_prime ) )+1;
+// bool validate_prime_range( long test_prime, long idx ){
+// bool validate_prime_range( long test_prime, long idx, long &chk_idx_stop, long &chk_sqr ){
+
+bool validate_prime_range( long test_prime, long idx, long &last_idx, long &chk_stop ){
+	chk_stop = trunc( sqrt( (double)test_prime ) )+1;
+
 	vector<long>::iterator it;
-	for( it = p.begin()+idx; it != p.end(); ++it){
-		if(                  *it  > stop ) return true;
-		else if( pos_prime % *it == 0    ) return false;
+  last_idx = idx;
+	for( it = p.begin()+idx; it != p.end(); ++it,++last_idx){
+		if(                  *it  > chk_stop ) return true;
+		else if( test_prime % *it == 0    ) return false;
 	}
 	return true;
-}
 
+  // while(chk_sqr <= test_prime){
+  //   ++chk_idx_stop;
+  //   chk_sqr = primes[chk_idx_stop+1];
+  //   chk_sqr *= chk_sqr;
+  // }
+
+	// vector<long>::iterator it;
+  // long j = idx;
+	// for( it = p.begin()+idx; it != p.end(); ++it, ++j ){
+	// 	if(           j > chk_idx_stop ) { return  true; }
+	// 	else if( test_prime % *it == 0 ) { return false; }
+	// }
+	// return true;
+}
 
 long getPrimeAtIndex3(long target_index){
 
@@ -256,10 +276,37 @@ long getPrimeAtIndex3(long target_index){
     idx_stop = 0,
     idx_prime = p[idx];
 
-  printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
+  // long 
+  //   chk_idx_stop = -1, 
+  //   chk_sqr = 4;
+  // long last_idx=-1,chk_stop=0;
+  last_idx=-1;
+  long chk_stop=0;
+
+  // chk_idx_stop,chk_sqr
+  long k=1,kprint=1;
+
+  // printf("while(p.size():%ld < target_index:%ld){\n\n",p.size(),target_index);
 
 	while(p.size() < target_index){
-    //printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
+    // printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
+
+    // printf("  top of while( p.size():%ld < target_index:%ld)\n",p.size(),target_index);
+    // std::cout << "  idx:" << idx << endl << endl;
+
+    string sfilename="primes";
+    for(int i=0;i<=idx;++i){
+      sfilename += "." + std::to_string(p[i]);
+    }
+    sfilename += ".txt";
+
+    ofstream ofile;
+    ofile.open(sfilename,ios::out);
+    ofile << "# of primes: " << p.size() << endl;
+    for(long l : p){
+      ofile << std::to_string(l) << endl;
+    }
+    ofile.close();
 
     ++idx;
 		long test_idx = idx;
@@ -268,37 +315,52 @@ long getPrimeAtIndex3(long target_index){
 		bs        = next_bs;
 		next_bs   = bs * idx_prime;
 		// long next_bs_stop = trunc(sqrt((double)next_bs)) + 1;
+    cout << endl;
+    printf("  test_idx:%ld = idx:%ld\n",test_idx, idx);
+		printf("  idx_stop  = p.size(),       %ld  %ld\n",idx_stop,  p.size() );
+		printf("  idx_prime = p[idx],         %ld  %ld\n",idx_prime,  p[idx] );
+		printf("  bs        = next_bs,        %ld  %ld\n",bs, next_bs );
+		printf("  next_bs   = bs * idx_prime, %ld  %ld\n\n",next_bs, bs * idx_prime );
 
-		std::cout << "  " << idx << " " << p[idx] << " len(p): " << len(p) << endl;
 
-		printf("  for(long i=1; i<idx_prime:%ld; ++i) {\n",idx_prime);
+		// std::cout << "  " << idx << " " << p[idx] << " len(p): " << len(p) << endl;
 
-    long k=1,kprint=1;
+		// printf("  for(long i=1; i<idx_prime:%ld; ++i) {\n",idx_prime);
+
 		for(long i=1; i<idx_prime; ++i) {
-		    printf("    i:%ld < idx_prime:%ld\n",i,idx_prime);
+		    // printf("\n    i:%ld < idx_prime:%ld\n\n",i,idx_prime);
 				long inc = bs*i;
 				long test_prime = 1 + inc;
-				if( validate_prime_range(test_prime,p,idx) ){
+        // printf("    inc:%ld  test_prime:%ld\n",inc,test_prime);
+
+				if( validate_prime_range(test_prime,idx,last_idx,chk_stop) ){
 						p.push_back(test_prime);
-            cout << "        prime push:"<<test_prime <<endl;
+            // cout << "        prime push:"<<test_prime <<endl;
 				}
-        printf("    for( long j=idx:%ld; j<idx_stop:%ld; ++j ){\n",idx,idx_stop);
+        // printf("    for( long j=idx:%ld; j<idx_stop:%ld; ++j ){\n",idx,idx_stop);
 				for( long j=idx; j<idx_stop; ++j ){
 					test_prime = p[j] + inc;
-          printf("      j:%ld  p[j]:%ld  inc:%ld  test_prime:%ld\n",j,p[j],inc,test_prime);
-					if(validate_prime_range(test_prime,p,idx)){
+          // printf("\n      j:%ld  p[j]:%ld  inc:%ld  test_prime:%ld\n\n",j,p[j],inc,test_prime);
+					if(validate_prime_range(test_prime,idx,last_idx,chk_stop)){
 						p.push_back(test_prime);
-            cout << "        prime push:"<<test_prime <<endl;
+            // cout << "        prime push:"<<test_prime <<endl;
 
 						///////////////////////////
 						if( ++k >= kprint ){
-							// cout << i << endl;
+							// cout << "  k:"<< k << "  kprint:" << kprint << endl;
 							time_t this_time = time(NULL);
 							if( this_time-last_time < 5 ){
-								// cout << i << endl;
-								// iprint = iprint * 2; //<<= 1;
+                // cout << endl;
+								// cout << "  this_time-last_time = " << this_time-last_time << " < 5 ...  i: " << i << endl;
+                // cout << "  kprint = " << kprint << "    kprint <<= 1" << endl;
+								//iprint = iprint * 2; //<<= 1;
+
 								kprint <<= 1;
+                // cout << "  kprint = " << kprint << endl;
+
 							}else{
+                // cout << endl;
+								// cout << "this_time-last_time = " << this_time-last_time << " >= 5" << endl;
 								k=1;
 								time_t diff_time = this_time-last_time; 
 								if(diff_time>10){
@@ -307,44 +369,57 @@ long getPrimeAtIndex3(long target_index){
 								last_time=this_time;
 								time_t total_time = last_time-first_time;
 								std::cout.imbue(std::locale(""));
-								cout <<        "index: " << primes.size() 
-										<< "  test_prime: " << test_prime 
-										<< "  diff: " << diff_time
-										<< "  kp: " << kprint
-										<< "  runtime: " << total_time/60 <<" minutes, " << total_time % 60 << " seconds" << endl;
+								cout <<"primes size: " << p.size();
+								cout << "  test_prime: " << test_prime // last_idx,chk_stop
+                    << "  idx: " << idx << "  " << p[idx] << " " << i << " " << j << "  lidx: " << last_idx << "  kstop: " << chk_stop 
+                    // << "  idx: " << idx << "  chk_idx_stop: " << chk_idx_stop
+										<< "  tdiff:" << diff_time
+										<< "  kp: " << kprint;
+                printf("  rt: %ld days, %02ld:%02ld:%02ld", total_time/3600/24, (total_time/3600)%24, (total_time/60)%60, total_time % 60);
+                cout << endl;
+
+										// << "  runtime: " << total_time/3600 <<" hours, "<< (total_time/60)%60 <<" minutes, " << total_time % 60 << " seconds" << endl;
 							}
 						}
 						///////////////////////////
 
 
 					}
+          // cout << "     for( long j=idx; j<idx_stop; ++j ) <<<< END of loop: j:" << j << " < idx_stop:" << idx_stop << endl;
 				}
+        // cout << "     for( long j=idx; j<idx_stop; ++j ) <<<< exited the loop.  idx_stop:" << idx_stop << endl;
+        // cout << "  for(long i=1; i<idx_prime; ++i) <<<< END of loop:  i:" << i << " < idx_prime:" << idx_prime<<  endl;
 		}
+    // cout << "  for(long i=1; i<idx_prime; ++i) <<<< exited the loop.  idx_prime:" << idx_prime <<  endl;
+    // cout << endl;
+    // cout << "  p.size():" << p.size() << " ?< target_index:" << target_index << endl;
+
 
 
 
 		///////////////////////////
-    return p[target_index];
+    //return p[target_index];
+    // cout << "while(p.size() < target_index){ <<<< END of loop" << endl;
 	}
 
-  int prime=-1;
-  if (primes.size()>target_index){
-    return primes[target_index];
-  }
-  for( 
-    int test_prime = 11, chk_idx_stop = 2, chk_sqr = 25;
-    primes.size()<target_index;
-    test_prime += 2
-  ) {
-    if ( check_prime3(test_prime,chk_idx_stop,chk_sqr)){
-      primes.push_back(test_prime);
-    }
-    test_prime += 4;
-    if ( check_prime3(test_prime,chk_idx_stop,chk_sqr)){
-      primes.push_back(test_prime);
-    }
-  }
-  return prime;
+  // int prime=-1;
+  // if (primes.size()>target_index){
+  //   return primes[target_index];
+  // }
+  // for( 
+  //   int test_prime = 11, chk_idx_stop = 2, chk_sqr = 25;
+  //   primes.size()<target_index;
+  //   test_prime += 2
+  // ) {
+  //   if ( check_prime3(test_prime,chk_idx_stop,chk_sqr)){
+  //     primes.push_back(test_prime);
+  //   }
+  //   test_prime += 4;
+  //   if ( check_prime3(test_prime,chk_idx_stop,chk_sqr)){
+  //     primes.push_back(test_prime);
+  //   }
+  // }
+  return p[target_index];
 }
 
 int main(int argc, char** argv){
@@ -382,6 +457,25 @@ int main(int argc, char** argv){
     auto the_prime = getPrimeAtIndex3(target);
 
     cout << endl;
+    cout << "the target index: " << target << endl; 
+    cout << "the target prime: " << the_prime << endl;
+    cout << endl;
+
+    string sfilename="primes";
+    for(int i=0;i<=last_idx;++i){
+      sfilename += "." + std::to_string(p[i]);
+    }
+    sfilename += ".txt";
+
+    ofstream ofile;
+    ofile.open(sfilename,ios::trunc);
+    ofile << "# of primes: " << p.size() << endl;
+    for(long l : p){
+      ofile << std::to_string(l) << endl;
+    }
+    ofile.close();
+
+
     long ind=1;
     long end=p.size();
     bool makeabreak=true;

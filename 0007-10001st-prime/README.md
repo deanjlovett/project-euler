@@ -35,3 +35,5 @@ clang++ -std=c++20 -stdlib=libc++ gp5.cpp -o gp5.cpp.mac
 ./gp2.cpp.mac
 ./gp3.cpp.mac
 ./gp4.cpp.mac
+./gp5.cpp.mac
+
