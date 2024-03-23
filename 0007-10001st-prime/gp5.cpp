@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <list>
 #include <stdio.h>
 #include <time.h>
 #include <vector>
@@ -260,6 +261,35 @@ bool validate_prime_range( long test_prime, long idx, long &last_idx, long &chk_
 	// return true;
 }
 
+std::string getPrimeAsHex(long prev, long curr) {
+  std::string ret;
+  const long mask=0xff;
+  const char* arr = "0123456789abcdef_";
+  long work=curr;
+  long last=prev;
+  int extra = 0;
+  int lc = 1;
+  while(work>0){
+    if( (work & mask) < (last & mask) ) extra=lc;
+    ++lc;
+    
+    long right =      work & 0x000f;
+    long left  = (work>>4) & 0x000f;
+    work >>= 8;
+    last >>= 8;
+    char marr[5]="  ZZ";
+    // marr[0] = ' ';
+    // marr[1] = ' ';
+    marr[2] = arr[left];
+    marr[3] = arr[right];
+    // marr[4] = 0;
+    // snprintf(marr,5,"  %c%c",arr[left],arr[right]);
+    ret = marr + ret;
+  }
+  for(int i=0;i<extra;++i) ret += " <<";
+  return ret;
+}
+
 long getPrimeAtIndex3(long target_index){
 
 	std::cout << "getPrimeAtIndex3" << endl;
@@ -288,6 +318,13 @@ long getPrimeAtIndex3(long target_index){
 
   // printf("while(p.size():%ld < target_index:%ld){\n\n",p.size(),target_index);
 
+  // ofstream bfile;
+  // bfile.open("0000.ppb2",ios::binary);
+  //
+  // loop through and print out the the last 2 bytes of each prime.
+  //
+
+
 	while(p.size() < target_index){
     // printf("while(p.size():%ld < target_index:%ld){\n",p.size(),target_index);
 
@@ -303,8 +340,10 @@ long getPrimeAtIndex3(long target_index){
     ofstream ofile;
     ofile.open(sfilename,ios::out);
     ofile << "# of primes: " << p.size() << endl;
-    for(long l : p){
-      ofile << std::to_string(l) << endl;
+    long prev = 0;
+    for(long curr : p){
+      ofile << std::to_string(curr) << "    " << getPrimeAsHex(prev,curr) << endl;
+      prev = curr;
     }
     ofile.close();
 

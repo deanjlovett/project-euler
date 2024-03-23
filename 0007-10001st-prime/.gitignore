@@ -27,3 +27,4 @@ node_modules
 *.app 
 *.mac 
 *.dSYM
+primes.2.3.5*.txt
